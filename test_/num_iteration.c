@@ -13,12 +13,13 @@ typedef struct {
 
 arr create_num_range() {
 	arr iter;
-	
+	mpf_init2(iter.num, 128);
+
 	printf("Zahlenraum eingeben: ");
 	
 	if (fgets(iter.buffer, sizeof(iter.buffer), stdin) != NULL) {
-		iter.num = strtoull(iter.buffer, NULL, 10);
-		printf("Zahlenraum: %llu\n", iter.num);
+		iter.num = mpf_set_str(iter.num, iter.buffer, 10);
+		gmp_printf("Zahlenraum: %Ff\n", iter.num);
 	} else {
 		printf("Lesefehler\n");
 		iter.num = 0;
@@ -55,7 +56,7 @@ int main() {
 	
 	if (seq.ptr != NULL) {
 		for (size_t i = 0; i < seq.size; i++) {
-		printf("%llu\n", seq.ptr[i]);
+		gmp_printf("%Ff\n", seq.ptr[i]);
 		}
 	free(seq.ptr);
 	}
