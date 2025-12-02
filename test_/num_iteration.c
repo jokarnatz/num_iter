@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <gmp.h>
 
 typedef struct {
-	unsigned long long num;
+	mpf_t num;
 	size_t size;
 	char buffer[100];
-	unsigned long long *temp;
-	unsigned long long *ptr;
+	mpf_t *temp;
+	mpf_t *ptr;
 }	arr;
 
 arr create_num_range() {
@@ -31,7 +32,7 @@ arr create_num_range() {
 arr iterate_num_range(void) {
 	arr seq = create_num_range();
 
-	unsigned long long *temp = malloc(seq.num * sizeof(unsigned long long));
+	mpf_t *temp = malloc(seq.num * sizeof(mpf_t));
 		if (temp == NULL) {
 			fprintf(stderr, "Speicher war zu voll..");
 			seq.ptr = NULL;
@@ -40,7 +41,11 @@ arr iterate_num_range(void) {
 		} else { seq.ptr = temp;
 		  }
 		for (size_t i = 0; i < seq.size; i++) {
-			seq.ptr[i] = (unsigned long long)pow(i, i * 0.5);
+			if (i <= 0) {
+				seq.ptr[i] = 0; // eigentlich i = n.d.
+			} else if (i > 0) {
+			seq.ptr[i] = (mpf_t)mpf_pow_ui(i, i * 0.5);
+			}
 		}
 	return seq;
 }
@@ -50,7 +55,7 @@ int main() {
 	
 	if (seq.ptr != NULL) {
 		for (size_t i = 0; i < seq.size; i++) {
-		printf("%llu", seq.ptr[i]);
+		printf("%llu\n", seq.ptr[i]);
 		}
 	free(seq.ptr);
 	}
