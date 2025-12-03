@@ -18,12 +18,14 @@ arr create_num_range() {
 	printf("Zahlenraum eingeben: ");
 	
 	if (fgets(iter.buffer, sizeof(iter.buffer), stdin) != NULL) {
-		iter.num = mpf_set_str(iter.num, iter.buffer, 10);
-		gmp_printf("Zahlenraum: %Ff\n", iter.num);
-	} else {
-		printf("Lesefehler\n");
-		iter.num = 0;
-	  }
+		if (mpf_set_str(iter.num, iter.buffer, 10) != 0) {
+			printf("Ungültige Eingabe für Zahlenraum\n");
+		}
+			gmp_printf("Zahlenraum: %Ff\n", iter.num);
+		} else {
+			printf("Lesefehler\n");
+			mpf_set_ui(iter.num, 0);
+	    }
 	
 	iter.size = (size_t)iter.num;
 	
@@ -45,7 +47,7 @@ arr iterate_num_range(void) {
 			if (i <= 0) {
 				seq.ptr[i] = 0; // eigentlich i = n.d.
 			} else if (i > 0) {
-			seq.ptr[i] = (mpf_t)mpf_pow_ui(i, i * 0.5);
+			seq.ptr[i] = mpf_pow_ui(i, i * 0.5);
 			}
 		}
 	return seq;
